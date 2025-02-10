@@ -1,4 +1,4 @@
-package models;
+package com.busbooking.BusReservationSystemPortal.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
