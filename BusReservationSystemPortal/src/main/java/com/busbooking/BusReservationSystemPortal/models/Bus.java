@@ -63,4 +63,7 @@ public class Bus {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate busJourneyDate;
 
+    @ManyToOne
+    private Route route;
+
 }
