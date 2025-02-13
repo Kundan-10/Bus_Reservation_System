@@ -31,6 +31,6 @@ public class Reservation {
     @ManyToOne
     private Bus bus;
 
-//    @ManyToOne
-//    private User user;
+    @ManyToOne
+    private User user;
 }
