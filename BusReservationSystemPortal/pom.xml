@@ -57,6 +57,12 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+			<groupId>net.bytebuddy</groupId>
+			<artifactId>byte-buddy</artifactId>
+			<version>1.14.8</version> <!-- Check for the latest version -->
+		</dependency>
+
 		<!-- SpringDoc OpenAPI for Swagger -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
