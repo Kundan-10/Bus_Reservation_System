@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) throws UserException {
         User existingUser = userDao.findByMobileNumber(user.getMobileNumber());
-        if (Objects.isNull(existingUser)) throw new UserException("User with this mobile number already exists!");
+        if (Objects.nonNull(existingUser)) throw new UserException("User with this mobile number already exists!");
         else
             return userDao.save(user);
     }
