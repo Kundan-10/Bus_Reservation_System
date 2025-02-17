@@ -8,6 +8,7 @@ import com.busbooking.BusReservationSystemPortal.repositoty.UserSessionDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -35,5 +36,34 @@ public class UserServiceImpl implements UserService {
             return userDao.save(user);
         } else
             throw new UserException("Invalid User Details! please login first.");
+    }
+
+    @Override
+    public User deleteUser(Integer userId, String key) throws UserException {
+        CurrentUserSession loginUser = userSessionDao.findByUuid(key);
+        if (Objects.isNull(loginUser)) throw new UserException("Please provide a valid key to delete a User!");
+        User user = userDao.findById(userId)
+                .orElseThrow(() -> new UserException("Invalid user Id!"));
+        userDao.delete(user);
+        return user;
+    }
+
+    @Override
+    public User viewUserById(Integer userId, String key) throws UserException {
+        CurrentUserSession loginUser = userSessionDao.findByUuid(key);
+        if (Objects.isNull(loginUser)) throw new UserException("Please provide a valid key to delete a User!");
+        User user = userDao.findById(userId)
+                .orElseThrow(() -> new UserException("Invalid user Id!"));
+        userDao.delete(user);
+        return user;
+    }
+
+    @Override
+    public List<User> viewUsers(String key) throws UserException {
+        CurrentUserSession loginUser = userSessionDao.findByUuid(key);
+        if (Objects.isNull(loginUser)) throw new UserException("Please provide a valid key to delete a User!");
+        List<User> users = userDao.findAll();
+        if (users.isEmpty()) throw new UserException("Users not found!");
+        return users;
     }
 }
