@@ -20,8 +20,14 @@ public class GlobalException {
     }
 
     @ExceptionHandler(LoginException.class)
-    public ResponseEntity<Error> loginException(UserException userEx, WebRequest web){
+    public ResponseEntity<Error> loginException(LoginException userEx, WebRequest web){
         Error error = new Error(LocalDateTime.now(),userEx.getMessage(), web.getDescription(false));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AdminException.class)
+    public ResponseEntity<Error> adminException(AdminException userEx, WebRequest web) {
+        Error error = new Error(LocalDateTime.now(), userEx.getMessage(), web.getDescription(false));
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
