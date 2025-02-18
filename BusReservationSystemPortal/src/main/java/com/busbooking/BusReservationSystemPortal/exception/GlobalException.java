@@ -31,6 +31,12 @@ public class GlobalException {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(BusException.class)
+    public ResponseEntity<Error> adminException(BusException userEx, WebRequest web) {
+        Error error = new Error(LocalDateTime.now(), userEx.getMessage(), web.getDescription(false));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Error> validatedException(MethodArgumentNotValidException validEx,WebRequest web){
         Error error = new Error(LocalDateTime.now(),validEx.getMessage(),validEx.getBindingResult().getFieldError().getDefaultMessage());
