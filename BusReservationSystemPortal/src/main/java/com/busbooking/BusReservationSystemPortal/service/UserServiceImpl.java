@@ -8,8 +8,10 @@ import com.busbooking.BusReservationSystemPortal.repositoty.UserSessionDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +31,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user, String key) throws UserException {
 
-        CurrentUserSession loginUser = userSessionDao.findByUuid(key);
-        if (Objects.isNull(loginUser)) throw new UserException("Please provide a valid key to update a User Details!");
-
+       CurrentUserSession loginUser= validateUserSession(key);
         if (Objects.equals(user.getUserId(), loginUser.getUserId())) {
             return userDao.save(user);
         } else
@@ -40,8 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User deleteUser(Integer userId, String key) throws UserException {
-        CurrentUserSession loginUser = userSessionDao.findByUuid(key);
-        if (Objects.isNull(loginUser)) throw new UserException("Please provide a valid key to delete a User!");
+       validateUserSession(key);
         User user = userDao.findById(userId)
                 .orElseThrow(() -> new UserException("Invalid user Id!"));
         userDao.delete(user);
@@ -50,20 +49,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User viewUserById(Integer userId, String key) throws UserException {
-        CurrentUserSession loginUser = userSessionDao.findByUuid(key);
-        if (Objects.isNull(loginUser)) throw new UserException("Please provide a valid key to delete a User!");
-        User user = userDao.findById(userId)
+        validateUserSession(key);
+        return userDao.findById(userId)
                 .orElseThrow(() -> new UserException("Invalid user Id!"));
-        userDao.delete(user);
-        return user;
     }
 
     @Override
     public List<User> viewUsers(String key) throws UserException {
-        CurrentUserSession loginUser = userSessionDao.findByUuid(key);
-        if (Objects.isNull(loginUser)) throw new UserException("Please provide a valid key to delete a User!");
-        List<User> users = userDao.findAll();
-        if (users.isEmpty()) throw new UserException("Users not found!");
-        return users;
+        validateUserSession(key);
+        return Optional.ofNullable(userDao.findAll())
+                .filter(list -> !list.isEmpty())
+                .orElse(Collections.emptyList());
     }
+
+    private CurrentUserSession validateUserSession(String key) throws UserException {
+        return Optional.ofNullable(userSessionDao.findByUuid(key))
+                .orElseThrow(() -> new UserException("Invalid session key! Please provide a valid key!"));
+      }
 }
