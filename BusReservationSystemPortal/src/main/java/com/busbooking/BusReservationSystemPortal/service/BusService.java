@@ -17,7 +17,7 @@ public interface BusService {
 
         public Bus viewBus(Integer busId) throws BusException;
 
-        public List<Bus> viewBusByType(String BusType) throws BusException;
+        public List<Bus> viewBusByType(String busType) throws BusException;
 
         public List<Bus> viewAllBuses() throws BusException;
 
