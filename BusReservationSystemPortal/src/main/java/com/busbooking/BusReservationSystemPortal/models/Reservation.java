@@ -33,4 +33,19 @@ public class Reservation {
 
     @ManyToOne
     private User user;
+
+    public Reservation(Bus bus, String reservationStatus, LocalDate reservationDate,
+                       LocalTime reservationTime, String source, String destination,
+                       int noOfSeatsBooked, Integer fare, LocalDate journeyDate, User user) {
+        this.bus = bus;
+        this.reservationStatus = reservationStatus;
+        this.reservationDate = reservationDate;
+        this.reservationTime = reservationTime;
+        this.source = source;
+        this.destination = destination;
+        this.noOfSeatsBooked = noOfSeatsBooked;
+        this.fare = fare;
+        this.journeyDate = journeyDate;
+        this.user = user;
+    }
 }
