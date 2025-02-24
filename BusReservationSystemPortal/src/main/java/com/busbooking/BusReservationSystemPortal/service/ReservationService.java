@@ -17,7 +17,7 @@ public interface ReservationService {
 
     public Reservation viewReservation(Integer reservationId,String key) throws ReservationException, AdminException;
 
-    public List<Reservation> viewAllReservation(String key)throws ReservationException;
+    public List<Reservation> viewAllReservation(String key) throws ReservationException, UserException;
 
     public List<Reservation> viewReservationByUser(String key) throws ReservationException, UserException;
 }
