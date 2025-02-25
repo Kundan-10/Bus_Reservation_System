@@ -31,5 +31,8 @@ public class Feedback {
     private LocalDateTime feedbackDateTime;
 
     @OneToOne
+    private User user;
+
+    @OneToOne
     private Bus bus;
 }
