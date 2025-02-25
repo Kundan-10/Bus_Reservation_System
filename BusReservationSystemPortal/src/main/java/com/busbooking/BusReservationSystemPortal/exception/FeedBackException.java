@@ -1,8 +1,8 @@
 package com.busbooking.BusReservationSystemPortal.exception;
 
-public class FeedBackException extends Exception{
+public class FeedbackException extends Exception{
 
-    FeedBackException(String smg){
+    public FeedbackException(String smg){
         super(smg);
     }
 }
