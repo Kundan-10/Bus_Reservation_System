@@ -15,7 +15,7 @@ public interface FeedbackService {
 
     public Feedback deleteFeedBack(Integer feedbackId, String key)throws FeedbackException, UserException;
 
-    public Feedback viewFeedback(Integer id) throws FeedbackException;
+    public Feedback viewFeedback(Integer feedbackId) throws FeedbackException;
 
     public List<Feedback> viewFeedbackAll() throws FeedbackException;
 }
