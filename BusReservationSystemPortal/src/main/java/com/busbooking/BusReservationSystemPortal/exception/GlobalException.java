@@ -32,19 +32,25 @@ public class GlobalException {
     }
 
     @ExceptionHandler(BusException.class)
-    public ResponseEntity<Error> adminException(BusException userEx, WebRequest web) {
+    public ResponseEntity<Error> busException(BusException userEx, WebRequest web) {
         Error error = new Error(LocalDateTime.now(), userEx.getMessage(), web.getDescription(false));
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RouteException.class)
-    public ResponseEntity<Error> adminException(RouteException userEx, WebRequest web) {
+    public ResponseEntity<Error> routeException(RouteException userEx, WebRequest web) {
         Error error = new Error(LocalDateTime.now(), userEx.getMessage(), web.getDescription(false));
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ReservationException.class)
-    public ResponseEntity<Error> adminException(ReservationException userEx, WebRequest web) {
+    public ResponseEntity<Error> reservationException(ReservationException userEx, WebRequest web) {
+        Error error = new Error(LocalDateTime.now(), userEx.getMessage(), web.getDescription(false));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FeedBackException.class)
+    public ResponseEntity<Error> feedBackException(FeedBackException userEx, WebRequest web) {
         Error error = new Error(LocalDateTime.now(), userEx.getMessage(), web.getDescription(false));
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
