@@ -20,7 +20,7 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public Admin createAdmin(Admin admin) throws AdminException {
         Admin existingAdmin = adminDao.findByMobileNumber(admin.getMobileNumber());
-        if (Objects.isNull(existingAdmin))
+        if (Objects.nonNull(existingAdmin))
             throw new AdminException("Admin already registered with this Mobile number!");
         return adminDao.save(admin);
     }
