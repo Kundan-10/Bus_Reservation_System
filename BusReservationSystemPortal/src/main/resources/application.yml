@@ -1,0 +1,4 @@
+jwt:
+  secret-key : mnbvcxzasdfghjklqwertyuiopmandaqeruaoepkdhalkghlaghlakdfhxnczvhzdjhduaidfaudfaddfku
+  access-token.expiration : 900000 # 15 minutes in milliseconds
+  refresh-token.expiration : 172800000 # 48 hours in milliseconds
