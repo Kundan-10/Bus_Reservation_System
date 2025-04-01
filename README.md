@@ -1,4 +1,4 @@
-# BusBooking System  REST API for Bus Reservation System Portal 
+# Bus Reservation System Portal REST API
 <img  src="https://plus.unsplash.com/premium_photo-1664302152991-d013ff125f3f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" width="93%" height="420px" /><img align="right"/>
 
 * We have developed this REST API for a Bus Reservation System Portal Application. This API performs all the fundamental CRUD operations of any Bus Reservation Application platform with user validation at every step
