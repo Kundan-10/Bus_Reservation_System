@@ -119,7 +119,7 @@ API documentation is available via **Swagger UI**:
 
 ```json
 {
-    "mobileNo": "8891067909",
+    "email": "8891067909",
     "password": "Secure@123"
 }
 ```
