@@ -1,115 +1,138 @@
 # Bus Reservation System Portal REST API
-<img  src="https://plus.unsplash.com/premium_photo-1664302152991-d013ff125f3f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" width="93%" height="420px" /><img align="right"/>
+<img  src="https://images.unsplash.com/photo-1525962898597-a4ae6402826e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDd8fGJ1c3xlbnwwfHwwfHx8MA%3D%3D" width="93%" height="420px" /><img align="right"/>
 
-* We have developed this REST API for a Bus Reservation System Portal Application. This API performs all the fundamental CRUD operations of any Bus Reservation Application platform with user validation at every step
-## Tech Stack
+This Bus Reservation System Portal, built by me, is a robust and secure platform for seamless bus ticket booking. It features efficient CRUD operations, JWT-based authentication, Spring Security, and role-based access control, ensuring a smooth and secure user experience. 🚀
 
-* Java
-* Spring Framework
-* Spring Boot
-* Spring Data JPA
-* Hibernate
-* MySQL
+## 🛠 Tech Stack
 
-## Modules
+- **Java 17+**
+- **Spring Boot**
+- **Spring Security (JWT Authentication)**
+- **Spring Data JPA**
+- **Hibernate**
+- **MySQL**
+- **Lombok**
+- **Swagger API Documentation**
 
-* Login, Logout Module
-* Admin Module
-* User Module
-* Route Module
-* Bus Module
-* Reservation Module
-* Feedback Module
+## 📌 Main Modules
 
-## Features
+### 🏷 User Module
+- **User Registration & Login** (JWT-based authentication)
+- **Search for Available Buses** based on routes and schedules
+- **Book a Ticket** for a selected bus
+- **View Booking History** and manage reservations
+- **Update User Profile**
+- **Provide Feedback** for completed trips
 
-* User and Admin authentication & validation with session uuid.
-* Admin Features:
-    * Administrator Role of the entire application
-    * Only registered admins with valid session token can add/update/delete route and bus from main database
-    * Admin can access the details of different users and reservations.
-* User Features:
-    * Registering themselves with application, and logging in to get the valid session token
-    * Viewing list of available buses and booking a reservation
-    * Only logged in user can access his reservations, profile updation and other features.
+### 👨‍💼 Admin Module
+- **Admin Authentication & Role-Based Access**
+- **Manage Bus Information** (Add, Update, Delete Bus details)
+- **Manage Routes** (Add, Update, Delete Routes)
+- **View and Manage Users**
+- **Access & Manage Reservations**
+- **Moderate User Feedback**
 
-## Installation & Run
+### 🚏 Route Module
+- Manage bus routes, including **stops and distances**
+- Assign routes to specific buses
 
-* Before running the API server, you should update the database config inside the [application.properties](https://github.com/arshiya786-af/afraid-stew-8500/tree/main/BusReservationSystemPortal/src/main/resources) file. 
-* Update the port number, username and password as per your local database config.
+### 🚌 Bus Module
+- Store bus details including **bus type, capacity, operator, and schedule**
+- Assign buses to specific routes
 
-```
-    server.port=8888
+### 🎟 Reservation Module
+- Allow users to **book, cancel, and modify** reservations
+- Track **reservation history and payment status**
 
-    spring.datasource.url=jdbc:mysql://localhost:3306/ibusdb
-    spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
-    spring.datasource.username=root
-    spring.datasource.password=root
+### ⭐ Feedback Module
+- Users can **rate and review** their journey experience
+- Admin can **moderate inappropriate reviews**
 
-```
+## 🚀 Advanced Features
 
-## API Root Endpoint
+### 🔐 Security & Authentication
 
-`https://localhost:8888/`
+- **JWT-based authentication** with role-based access control.
+- **Password encryption** using **BCrypt** for security.
+- **Session management** to prevent unauthorized access.
 
-`http://localhost:8888/swagger-ui/index.html#/`
+### 📈 Additional Enhancements
 
+- **Global Exception Handling** for better API stability.
+- **Swagger UI Integration** for interactive API testing.
 
-## API Module Endpoints
+## 🚀 Installation & Run
 
-### Login Module
+### ⚙ Prerequisites
 
-* `POST //login/admin` : Admin can login with mobile number and password provided at the time of registation
-<!--
-### User Module
+- Java 17+
+- MySQL Database
+- Maven
 
+### 🔧 Configuration
 
-* `POST /customer/login` : Logging in customer with valid mobile number & password
-* `GET /customer/availablecabs` : Getting the list of all the available cabs
-* `GET /customers/cabs` : Getting All the cabs
-* `GET /customers/checkhistory` : Getting the history of completed tr
-* `PUT /customer/update/{mobile}` : Updates customer details based on mobile number
-* `PATCH /customer/updatepassword/{mobile}` : Updates customer's password based on the given mobile number
-* `POST /customer/booktrip` : Customer can book a cab
-* `POST /customer/updatetrip` : Customer can modify or update the trip
-* `POST /customer/logout` : Logging out customer based on session token
-* `DELETE /customer/delete` : Deletes logged in user 
-* `DELETE /customer/complete/{tripid}` : Completed the trip with the given tripid 
-* `DELETE /customer/canceltrip` : Cancel the trip with the given tripid   
+Before running the API server, update the database configuration inside the `application.properties` file.
 
+```properties
+server.port=8888
 
-### Admin Module
+spring.datasource.url=jdbc:mysql://localhost:3306/ibusdb
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.username=root
+spring.datasource.password=root
 
-* `POST /admin/register` : Register a new admin with proper data validation and admin session
-* `POST /admin/login` : Admin can login with mobile number and password provided at the time of registation
-* `GET /admin/logout` : Logging out admin based on session token
-* `GET /admin/listoftripsbycustomer` : Get list of trips of by a customer id
-* `GET /admin/listoftrips` : Get list of trips of all the trips
-* `GET /admin/listocustomers` : Get list of all the customers
-* `GET /admin/listodrivers` : Get list of all the drivers
-* `PUT /admin/update/{username}` : Updates admin detaisl by passed user name
-* `DELETE /admin/delete` : Deletes the admin with passed id   -->
-
-
-### Sample API Response for Admin Login
-
-`POST   localhost:8888/login/admin`
-
-* Sample Request Body
-
-```
-    {
-        "mobileNo": "8891067909",
-        "password": "Moarpllme@007"
-    }
+spring.security.jwt.secret=your_secret_key
+spring.security.jwt.expiration=3600000
 ```
 
-* Sample Response Body
+### ▶ Running the Application
 
+```sh
+# Clone the repository
+git clone https://github.com/your-username/BusReservationSystemPortal.git
+
+# Navigate to the project directory
+cd BusReservationSystemPortal
+
+# Build the project
+mvn clean install
+
+# Start the application
+mvn spring-boot:run
 ```
-   CurrentAdminSession( adminId=1, uuid=uUcWXg,localDatetime=2022-11-11 12:29:52.376508)
-   
+
+## 📄 API Documentation
+
+API documentation is available via **Swagger UI**:
+
+- **Swagger UI:** [http://localhost:8888/swagger-ui/index.html](http://localhost:8888/swagger-ui/index.html)
+- **API Root Endpoint:** `http://localhost:8888/`
+
+## 🔗 API Endpoints
+
+### 🔑 Authentication Module (JWT-Based Security)
+
+- `POST /auth/login` - Authenticate and receive JWT token.
+- `POST /auth/register` - Register a new user.
+
+**Request:**
+
+```json
+{
+    "mobileNo": "8891067909",
+    "password": "Secure@123"
+}
 ```
+
+**Response:**
+
+```json
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
+    "expiration": "2025-04-01T12:29:52.376508"
+}
+```
+
 
 ### Swagger UI
 
