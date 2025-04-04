@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface FeedbackService {
 
-    public Feedback addFeedBack(Feedback feedBack, Integer busId, String key) throws BusException, UserException;
+    public Feedback addFeedBack(Feedback feedBack, Integer busId) throws BusException, UserException;
 
-    public Feedback updateFeedBack(Feedback feedback,String key) throws FeedbackException, UserException;
+    public Feedback updateFeedBack(Feedback feedback) throws FeedbackException, UserException;
 
-    public Feedback deleteFeedBack(Integer feedbackId, String key)throws FeedbackException, UserException;
+    public Feedback deleteFeedBack(Integer feedbackId)throws FeedbackException, UserException;
 
     public Feedback viewFeedback(Integer feedbackId) throws FeedbackException;
 
