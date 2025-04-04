@@ -1,7 +1,7 @@
 # Bus Reservation System Portal REST API
 <img  src="https://images.unsplash.com/photo-1525962898597-a4ae6402826e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDd8fGJ1c3xlbnwwfHwwfHx8MA%3D%3D" width="93%" height="420px" /><img align="right"/>
 
-This Bus Reservation System Portal, built by me, is a robust and secure platform for seamless bus ticket booking. It features efficient CRUD operations, JWT-based authentication, Spring Security, and role-based access control, ensuring a smooth and secure user experience. 🚀
+The Bus Reservation System Portal is a robust and secure platform designed for seamless bus ticket booking. It features efficient CRUD operations, JWT-based authentication, Spring Security, and role-based access control, ensuring a smooth and secure user experience. 🚀
 
 ## 🛠 Tech Stack
 
