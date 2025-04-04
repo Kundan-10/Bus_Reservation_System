@@ -129,7 +129,6 @@ API documentation is available via **Swagger UI**:
 ```json
 {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
-    "expiration": "2025-04-01T12:29:52.376508"
 }
 ```
 
