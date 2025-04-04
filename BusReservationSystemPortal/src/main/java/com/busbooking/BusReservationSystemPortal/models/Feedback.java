@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer feedBackId;
+    private Integer feedbackId;
 
     private Integer driverRating;
 
