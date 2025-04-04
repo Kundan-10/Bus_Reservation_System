@@ -25,29 +25,23 @@ public class FeedbackController {
 
     @Operation(summary = "Add Feedback", description = "Adds feedback for a specific bus")
     @PostMapping("/user/{busid}")
-    public ResponseEntity<Feedback> addFeedback(@Valid @RequestBody Feedback feedback,
-                                                @PathVariable("busid") Integer busId,
-                                                @RequestParam(required = false) String key) throws UserException, BusException {
+    public ResponseEntity<Feedback> addFeedback(@Valid @RequestBody Feedback feedback, @PathVariable("busid") Integer busId) throws UserException, BusException {
 
-        Feedback feedback2 = feedbackService.addFeedBack(feedback, busId, key);
+        Feedback feedback2 = feedbackService.addFeedBack(feedback, busId);
         return new ResponseEntity<>(feedback2, HttpStatus.ACCEPTED);
     }
 
     @Operation(summary = "Update Feedback", description = "Updates an existing feedback entry")
     @PutMapping("/user")
-    public ResponseEntity<Feedback> updateFeedback(@Valid @RequestBody Feedback feedback,
-                                                   @RequestParam(required = false) String key)
-            throws FeedbackException, UserException {
-        Feedback feedback2 = feedbackService.updateFeedBack(feedback, key);
+    public ResponseEntity<Feedback> updateFeedback(@Valid @RequestBody Feedback feedback) throws FeedbackException, UserException {
+        Feedback feedback2 = feedbackService.updateFeedBack(feedback);
         return new ResponseEntity<>(feedback2, HttpStatus.ACCEPTED);
     }
 
     @Operation(summary = "Delete Feedback", description = "Deletes a feedback entry")
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<Feedback> deleteFeedback(@PathVariable("id") Integer feedbackId,
-                                                   @RequestParam(required = false) String key)
-            throws FeedbackException, UserException {
-        Feedback feedback2 = feedbackService.deleteFeedBack(feedbackId, key);
+    public ResponseEntity<Feedback> deleteFeedback(@PathVariable("id") Integer feedbackId) throws FeedbackException, UserException {
+        Feedback feedback2 = feedbackService.deleteFeedBack(feedbackId);
         return new ResponseEntity<>(feedback2, HttpStatus.ACCEPTED);
     }
 
