@@ -1,13 +1,19 @@
 package com.busbooking.BusReservationSystemPortal.service;
 
+import com.busbooking.BusReservationSystemPortal.Enum.Role;
 import com.busbooking.BusReservationSystemPortal.exception.AdminException;
 import com.busbooking.BusReservationSystemPortal.exception.BusException;
+import com.busbooking.BusReservationSystemPortal.exception.UserException;
 import com.busbooking.BusReservationSystemPortal.models.Bus;
 import com.busbooking.BusReservationSystemPortal.models.Route;
+import com.busbooking.BusReservationSystemPortal.models.User;
 import com.busbooking.BusReservationSystemPortal.repositoty.AdminSessionDao;
 import com.busbooking.BusReservationSystemPortal.repositoty.BusDao;
 import com.busbooking.BusReservationSystemPortal.repositoty.RouteDao;
+import com.busbooking.BusReservationSystemPortal.repositoty.UserDao;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,15 +23,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BusServiceImpl implements BusService{
+public class BusServiceImpl implements BusService {
 
     private final AdminSessionDao adminSessionDao;
     private final RouteDao routeDao;
     private final BusDao busDao;
+    private final UserDao userDao;
 
     @Override
-    public Bus addBus(Bus bus, String key) throws BusException, AdminException {
-        validateAdminSession(key);
+    public Bus addBus(Bus bus) throws BusException, UserException {
+       User authenticatedUser = getAuthenticatedUser();
+       validateAdmin(authenticatedUser);
         Route route = routeDao.findByRouteFromAndRouteTo(bus.getRouteFrom(), bus.getRouteTo());
         if (Objects.nonNull(route)) {
             route.getBusList().add(bus);
@@ -36,8 +44,9 @@ public class BusServiceImpl implements BusService{
     }
 
     @Override
-    public Bus updateBus(Bus bus, String key) throws BusException, AdminException {
-        validateAdminSession(key);
+    public Bus updateBus(Bus bus) throws BusException, UserException {
+        User authenticatedUser = getAuthenticatedUser();
+        validateAdmin(authenticatedUser);
 
         Optional<Bus> existingBusOpt = busDao.findById(bus.getBusId());
 
@@ -57,26 +66,26 @@ public class BusServiceImpl implements BusService{
     }
 
     @Override
-    public Bus deleteBus(Integer busId, String key) throws BusException, AdminException {
-        validateAdminSession(key);
-        Optional<Bus> bus=busDao.findById(busId);
+    public Bus deleteBus(Integer busId) throws BusException, UserException {
+        User authenticatedUser = getAuthenticatedUser();
+        validateAdmin(authenticatedUser);
+        Optional<Bus> bus = busDao.findById(busId);
 
-        if(bus.isPresent()) {
+        if (bus.isPresent()) {
             Bus existingBus = bus.get();
-            if(LocalDate.now().isBefore(existingBus.getBusJourneyDate()) && !Objects.equals(existingBus.getAvailableSeats(), existingBus.getSeats()))
+            if (LocalDate.now().isBefore(existingBus.getBusJourneyDate()) && !Objects.equals(existingBus.getAvailableSeats(), existingBus.getSeats()))
                 throw new BusException("Cannot delete as the bus is scheduled and reservations are booked for the bus.");
 
             busDao.delete(existingBus);
             return existingBus;
-        }
-        else
-            throw new BusException("Bus doesn't exist with busId : "+busId);
+        } else
+            throw new BusException("Bus doesn't exist with busId : " + busId);
     }
 
     @Override
     public Bus viewBus(Integer busId) throws BusException {
         return busDao.findById(busId)
-                .orElseThrow(()-> new BusException("Bus doesn't exist with busId : "+ busId));
+                .orElseThrow(() -> new BusException("Bus doesn't exist with busId : " + busId));
     }
 
     @Override
@@ -95,9 +104,21 @@ public class BusServiceImpl implements BusService{
                 .orElseThrow(() -> new BusException("There is no bus available now"));
     }
 
-    private void validateAdminSession(String key) throws AdminException {
-        if (adminSessionDao.findByUuid(key) == null) {
-            throw new AdminException("Please provide a valid key!");
+    private User getAuthenticatedUser() throws UserException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UserException("Unauthorized request.");
+        }
+
+        String email = authentication.getName(); // Get logged-in user's email
+        return userDao.findByEmail(email)
+                .orElseThrow(() -> new UserException("User not found!"));
+    }
+    
+    private void validateAdmin(User authenticatedUser)throws UserException{
+        if(!authenticatedUser.getRole().equals(Role.ADMIN)){
+            throw new UserException("Unauthorized! Only admin can Add Bus.");
         }
     }
 
