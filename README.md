@@ -114,7 +114,7 @@ API documentation is available via **Swagger UI**:
 ### 🔑 Authentication Module (JWT-Based Security)
 
 - `POST /auth/login` - Authenticate and receive JWT token.
-- `POST /auth/register` - Register a new user.
+- `POST /auth/register` - Register a new user/ new Admin(Role Based).
 
 **Request:**
 
