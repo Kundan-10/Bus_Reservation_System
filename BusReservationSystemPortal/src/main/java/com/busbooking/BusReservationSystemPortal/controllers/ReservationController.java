@@ -27,54 +27,39 @@ public class ReservationController {
 
     @Operation(summary = "Add a reservation", description = "Allows a user to create a new reservation")
     @PostMapping("/user")
-    public ResponseEntity<Reservation> addReservation(
-            @Valid @RequestBody ReservationDTO reservationDTO,
-            @RequestParam(required = false) String key)
-            throws UserException, BusException, ReservationException {
+    public ResponseEntity<Reservation> addReservation(@Valid @RequestBody ReservationDTO reservationDTO) throws UserException, BusException, ReservationException {
 
-        Reservation savedReservation = reservationService.addReservation(reservationDTO, key);
+        Reservation savedReservation = reservationService.addReservation(reservationDTO);
         return new ResponseEntity<>(savedReservation, HttpStatus.ACCEPTED);
     }
 
     @Operation(summary = "Delete a reservation", description = "Allows a user to delete an existing reservation by ID")
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<Reservation> deleteReservation(
-            @PathVariable("id") Integer reservationId,
-            @RequestParam(required = false) String key)
-            throws UserException, BusException, ReservationException {
-
-        Reservation deletedReservation = reservationService.deleteReservation(reservationId, key);
+    public ResponseEntity<Reservation> deleteReservation(@PathVariable("id") Integer reservationId) throws UserException, BusException, ReservationException {
+        Reservation deletedReservation = reservationService.deleteReservation(reservationId);
         return new ResponseEntity<>(deletedReservation, HttpStatus.OK);
     }
 
     @Operation(summary = "View a reservation (Admin)", description = "Allows an admin to view a reservation by ID")
     @GetMapping("/admin/{id}")
-    public ResponseEntity<Reservation> viewReservation(
-            @PathVariable("id") Integer reservationId,
-            @RequestParam(required = false) String key)
-            throws AdminException, ReservationException {
+    public ResponseEntity<Reservation> viewReservation(@PathVariable("id") Integer reservationId) throws AdminException, ReservationException, UserException {
 
-        Reservation foundReservation = reservationService.viewReservation(reservationId, key);
+        Reservation foundReservation = reservationService.viewReservation(reservationId);
         return new ResponseEntity<>(foundReservation, HttpStatus.OK);
     }
 
     @Operation(summary = "View all reservations (Admin)", description = "Allows an admin to view all reservations")
     @GetMapping("/admin")
-    public ResponseEntity<List<Reservation>> viewAllReservation(
-            @RequestParam(required = false) String key)
-            throws AdminException, ReservationException, UserException {
-
-        List<Reservation> reservationList = reservationService.viewAllReservation(key);
+    public ResponseEntity<List<Reservation>> viewAllReservation() throws AdminException, ReservationException, UserException {
+        List<Reservation> reservationList = reservationService.viewAllReservation();
         return new ResponseEntity<>(reservationList, HttpStatus.OK);
     }
 
     @Operation(summary = "View reservations by user", description = "Allows a user to view their reservations")
     @GetMapping("/user")
-    public ResponseEntity<List<Reservation>> viewReservationByUser(
-            @RequestParam(required = false) String key)
-            throws UserException, ReservationException {
+    public ResponseEntity<List<Reservation>> viewReservationByUser() throws UserException, ReservationException {
 
-        List<Reservation> reservationList = reservationService.viewReservationByUser(key);
+        List<Reservation> reservationList = reservationService.viewReservationByUser();
         return new ResponseEntity<>(reservationList, HttpStatus.OK);
     }
 }
