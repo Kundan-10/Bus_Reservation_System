@@ -2,9 +2,11 @@ package com.busbooking.BusReservationSystemPortal.controllers;
 
 import com.busbooking.BusReservationSystemPortal.exception.AdminException;
 import com.busbooking.BusReservationSystemPortal.exception.RouteException;
+import com.busbooking.BusReservationSystemPortal.exception.UserException;
 import com.busbooking.BusReservationSystemPortal.models.Route;
 import com.busbooking.BusReservationSystemPortal.service.RouteService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,28 +26,25 @@ public class RouteController {
 
     @Operation(summary = "Add Route", description = "Adds a new bus route (Admin Only)")
     @PostMapping("/admin")
-    public ResponseEntity<Route> addRoute(@Valid @RequestBody Route route,
-                                          @RequestParam(required = false) String key)
-            throws RouteException, AdminException {
-        Route newRoute = routeService.addRoute(route, key);
+    public ResponseEntity<Route> addRoute(@Valid @RequestBody Route route)
+            throws RouteException, AdminException, UserException {
+        Route newRoute = routeService.addRoute(route);
         return new ResponseEntity<>(newRoute, HttpStatus.ACCEPTED);
     }
 
     @Operation(summary = "Delete Route", description = "Deletes a bus route by ID (Admin Only)")
     @DeleteMapping("/admin/{routeId}")
-    public ResponseEntity<Route> deleteRoute(@PathVariable("routeId") Integer routeId,
-                                             @RequestParam(required = false) String key)
-            throws RouteException, AdminException {
-        Route route = routeService.deleteRoute(routeId, key);
+    public ResponseEntity<Route> deleteRoute(@PathVariable("routeId") Integer routeId)
+            throws RouteException, AdminException, UserException {
+        Route route = routeService.deleteRoute(routeId);
         return new ResponseEntity<>(route, HttpStatus.OK);
     }
 
     @Operation(summary = "Update Route", description = "Updates an existing bus route (Admin Only)")
     @PutMapping("/admin")
-    public ResponseEntity<Route> updateRoute(@Valid @RequestBody Route route,
-                                             @RequestParam(required = false) String key)
-            throws RouteException, AdminException {
-        Route newRoute = routeService.updateRoute(route, key);
+    public ResponseEntity<Route> updateRoute(@Valid @RequestBody Route route)
+            throws RouteException, AdminException, UserException {
+        Route newRoute = routeService.updateRoute(route);
         return new ResponseEntity<>(newRoute, HttpStatus.OK);
     }
 
