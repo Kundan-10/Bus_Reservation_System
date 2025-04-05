@@ -1,7 +1,9 @@
 package com.busbooking.BusReservationSystemPortal.exception;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,6 +11,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalException {
@@ -66,13 +70,27 @@ public class GlobalException {
         Error error = new Error(LocalDateTime.now(),nohandler.getMessage(), web.getDescription(false));
         return new ResponseEntity<>(error,HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<Map<String, String>> jwtExcetpion(JwtException ex){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Invalid JWT token");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Map<String, String>> authenticationException(AuthenticationException ex){
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "Invalid JWT token");
+        response.put("message", ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+    
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Error> exception(Exception e,WebRequest web){
         Error error = new Error(LocalDateTime.now(),e.getMessage(), web.getDescription(false));
         return new ResponseEntity<>(error,HttpStatus.EXPECTATION_FAILED);
     }
-
 
 }
