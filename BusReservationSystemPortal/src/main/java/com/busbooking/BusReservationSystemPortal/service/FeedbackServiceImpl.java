@@ -9,7 +9,6 @@ import com.busbooking.BusReservationSystemPortal.models.User;
 import com.busbooking.BusReservationSystemPortal.repositoty.BusDao;
 import com.busbooking.BusReservationSystemPortal.repositoty.FeedbackDao;
 import com.busbooking.BusReservationSystemPortal.repositoty.UserDao;
-import com.busbooking.BusReservationSystemPortal.repositoty.UserSessionDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,8 +20,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FeedbackServiceImpl implements FeedbackService{
-    
-    private final UserSessionDao userSessionDao;
+
     private final FeedbackDao feedbackDao;
     private final UserDao userDao;
     private final BusDao busDao;
