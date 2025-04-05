@@ -1,6 +1,7 @@
 package com.busbooking.BusReservationSystemPortal.service;
 
 import com.busbooking.BusReservationSystemPortal.DTO.ReservationDTO;
+import com.busbooking.BusReservationSystemPortal.Enum.Role;
 import com.busbooking.BusReservationSystemPortal.exception.AdminException;
 import com.busbooking.BusReservationSystemPortal.exception.BusException;
 import com.busbooking.BusReservationSystemPortal.exception.ReservationException;
@@ -8,6 +9,8 @@ import com.busbooking.BusReservationSystemPortal.exception.UserException;
 import com.busbooking.BusReservationSystemPortal.models.*;
 import com.busbooking.BusReservationSystemPortal.repositoty.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,15 +23,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
 
-    private final UserSessionDao userSessionDao;
     private final UserDao userDao;
     private final BusDao busDao;
     private final ReservationDao reservationDao;
-    private final AdminSessionDao adminSessionDao;
 
     @Override
-    public Reservation addReservation(ReservationDTO reservationDTO, String key) throws ReservationException, BusException, UserException {
-        CurrentUserSession loggedInUser = validateUserSession(key);
+    public Reservation addReservation(ReservationDTO reservationDTO) throws ReservationException, BusException, UserException {
+        User loggedInUser = getAuthenticatedUser();
         User user = userDao.findById(loggedInUser.getUserId()).orElseThrow(() -> new UserException("User not found!"));
 
         Optional<Bus> opt = busDao.findById(reservationDTO.getBusDTO().getBusId());
@@ -69,12 +70,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
     @Override
-    public Reservation deleteReservation(Integer reservationId, String key) throws ReservationException, BusException, UserException {
-        CurrentUserSession loggedInUser= userSessionDao.findByUuid(key);
-
-        if(loggedInUser == null) {
-            throw new UserException("Please provide a valid key to reserve seats!");
-        }
+    public Reservation deleteReservation(Integer reservationId) throws ReservationException, BusException, UserException {
+        User loggedInUser = getAuthenticatedUser();
 
         User user = userDao.findById(loggedInUser.getUserId()).orElseThrow(()-> new UserException("User not found!"));
 
@@ -84,7 +81,6 @@ public class ReservationServiceImpl implements ReservationService {
 
             if(Objects.equals(reservationList.get(i).getReservationId(), reservationId))
             {
-
                 Optional<Reservation> Opt = reservationDao.findById(reservationId);
                 Reservation foundReservation = Opt.orElseThrow(()-> new ReservationException("No reservation found!"));
                 Bus bus = foundReservation.getBus();
@@ -92,8 +88,7 @@ public class ReservationServiceImpl implements ReservationService {
                 if(foundReservation.getJourneyDate().isBefore(LocalDate.now())) throw new ReservationException("Cannot cancel! Journey completed.");
 
                 bus.setAvailableSeats(bus.getAvailableSeats()+foundReservation.getNoOfSeatsBooked());
-                Bus updatedBus =busDao.save(bus);
-
+                busDao.save(bus);
                 reservationList.remove(i);
                 reservationDao.delete(foundReservation);
                 return foundReservation;
@@ -104,20 +99,16 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Reservation viewReservation(Integer reservationId, String key) throws ReservationException, AdminException {
-        CurrentAdminSession loggedInAdmin= adminSessionDao.findByUuid(key);
-
-        if(loggedInAdmin == null) {
-            throw new ReservationException("Please provide a valid key to view reservation!");
-        }
+    public Reservation viewReservation(Integer reservationId) throws ReservationException, AdminException, UserException {
+        User loggedInUser = getAuthenticatedUser();
+        validateAdmin(loggedInUser);
 
         Optional<Reservation> Opt = reservationDao.findById(reservationId);
         return Opt.orElseThrow(()-> new ReservationException("No reservation found!"));
     }
 
     @Override
-    public List<Reservation> viewAllReservation(String key) throws ReservationException, UserException {
-         validateUserSession(key);
+    public List<Reservation> viewAllReservation() throws ReservationException, UserException {
 
         List<Reservation> reservationList = reservationDao.findAll();
         if(reservationList.isEmpty()) throw new ReservationException("No reservations found!");
@@ -125,15 +116,27 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> viewReservationByUser(String key) throws ReservationException, UserException {
-
-        CurrentUserSession loggedInUser= validateUserSession(key);
+    public List<Reservation> viewReservationByUser() throws ReservationException, UserException {
+        User loggedInUser = getAuthenticatedUser();
         User user = userDao.findById(loggedInUser.getUserId()).orElseThrow(()-> new UserException("User not found!"));
         return user.getReservations();
     }
 
-    private CurrentUserSession validateUserSession(String key) throws UserException  {
-        return Optional.ofNullable(userSessionDao.findByUuid(key))
-                .orElseThrow(() -> new UserException("Invalid session key! Please provide a valid key!"));
+    private User getAuthenticatedUser() throws UserException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UserException("Unauthorized request.");
+        }
+
+        String email = authentication.getName(); // Get logged-in user's email
+        return userDao.findByEmail(email)
+                .orElseThrow(() -> new UserException("User not found!"));
+    }
+
+    private void validateAdmin(User authenticatedUser)throws UserException{
+        if(!authenticatedUser.getRole().equals(Role.ADMIN)){
+            throw new UserException("Access restricted: Admin privileges required.");
+        }
     }
 }
