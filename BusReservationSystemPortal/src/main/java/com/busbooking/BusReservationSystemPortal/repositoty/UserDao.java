@@ -9,7 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserDao extends JpaRepository<User, Integer> {
 
-    public User findByMobileNumber(String mobileNumber);
     Optional<User> findByEmail(String email);
 
 }
