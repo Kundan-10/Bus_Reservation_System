@@ -119,8 +119,8 @@ API documentation is available via **Swagger UI**:
 
 ```json
 {
-    "email": "8891067909",
-    "password": "Secure@123"
+    "email": "Admin@gmail.com",
+    "password": "Admin@123"
 }
 ```
 
@@ -128,7 +128,7 @@ API documentation is available via **Swagger UI**:
 
 ```json
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI...",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCIsdfadfadrte...",
 }
 ```
 
