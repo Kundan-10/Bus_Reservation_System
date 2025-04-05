@@ -102,6 +102,7 @@ mvn spring-boot:run
 ```
 
 ## 📄 API Documentation
+### Swagger UI
 
 API documentation is available via **Swagger UI**:
 
@@ -131,9 +132,6 @@ API documentation is available via **Swagger UI**:
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCIsdfadfadrte...",
 }
 ```
-
-
-### Swagger UI
 
 ---
 ### User and User Login Controller
