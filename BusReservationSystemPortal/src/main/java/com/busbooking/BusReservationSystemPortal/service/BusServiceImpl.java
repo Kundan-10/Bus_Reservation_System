@@ -7,7 +7,6 @@ import com.busbooking.BusReservationSystemPortal.exception.UserException;
 import com.busbooking.BusReservationSystemPortal.models.Bus;
 import com.busbooking.BusReservationSystemPortal.models.Route;
 import com.busbooking.BusReservationSystemPortal.models.User;
-import com.busbooking.BusReservationSystemPortal.repositoty.AdminSessionDao;
 import com.busbooking.BusReservationSystemPortal.repositoty.BusDao;
 import com.busbooking.BusReservationSystemPortal.repositoty.RouteDao;
 import com.busbooking.BusReservationSystemPortal.repositoty.UserDao;
@@ -25,7 +24,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BusServiceImpl implements BusService {
 
-    private final AdminSessionDao adminSessionDao;
     private final RouteDao routeDao;
     private final BusDao busDao;
     private final UserDao userDao;
