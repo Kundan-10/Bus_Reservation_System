@@ -1,13 +1,17 @@
 package com.busbooking.BusReservationSystemPortal.service;
 
+import com.busbooking.BusReservationSystemPortal.Enum.Role;
 import com.busbooking.BusReservationSystemPortal.exception.AdminException;
 import com.busbooking.BusReservationSystemPortal.exception.RouteException;
+import com.busbooking.BusReservationSystemPortal.exception.UserException;
 import com.busbooking.BusReservationSystemPortal.models.Bus;
 import com.busbooking.BusReservationSystemPortal.models.Route;
-import com.busbooking.BusReservationSystemPortal.repositoty.AdminDao;
-import com.busbooking.BusReservationSystemPortal.repositoty.AdminSessionDao;
+import com.busbooking.BusReservationSystemPortal.models.User;
 import com.busbooking.BusReservationSystemPortal.repositoty.RouteDao;
+import com.busbooking.BusReservationSystemPortal.repositoty.UserDao;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,13 +22,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RouteServiceImpl implements RouteService{
 
-    private final AdminDao adminDao;
     private final RouteDao routeDao;
-    private final AdminSessionDao adminSessionDao;
+    private final UserDao userDao;
 
     @Override
-    public Route addRoute(Route route, String key) throws RouteException, AdminException {
-        validateAdminSession(key);
+    public Route addRoute(Route route) throws RouteException, AdminException, UserException {
+        User authenticateUser =  getAuthenticatedUser();
+        validateAdmin(authenticateUser);
         Optional<Route> existingRoute = Optional.ofNullable(routeDao.findByRouteFromAndRouteTo(route.getRouteFrom(), route.getRouteTo()));
         if (existingRoute.isPresent()) {
             throw new RouteException("Route from " + route.getRouteFrom() + " to " + route.getRouteTo() + " already exists!");
@@ -34,8 +38,9 @@ public class RouteServiceImpl implements RouteService{
     }
 
     @Override
-    public Route updateRoute(Route route, String key) throws RouteException, AdminException {
-        validateAdminSession(key);
+    public Route updateRoute(Route route) throws RouteException, AdminException, UserException {
+        User authenticateUser =  getAuthenticatedUser();
+        validateAdmin(authenticateUser);
 
         Optional<Route> existedRoute = routeDao.findById(route.getRouteId());
         if(existedRoute.isPresent()) {
@@ -51,8 +56,9 @@ public class RouteServiceImpl implements RouteService{
     }
 
     @Override
-    public Route deleteRoute(int routeId, String key) throws RouteException, AdminException {
-        validateAdminSession(key);
+    public Route deleteRoute(int routeId) throws RouteException, AdminException, UserException {
+        User authenticateUser =  getAuthenticatedUser();
+        validateAdmin(authenticateUser);
         Route existingRoute = routeDao.findById(routeId)
                 .orElseThrow(() -> new RouteException("There is no route present of routeId :" + routeId));
         routeDao.delete(existingRoute);
@@ -76,9 +82,21 @@ public class RouteServiceImpl implements RouteService{
                 .orElseThrow(() -> new RouteException("There is no route available"));
     }
 
-    private void validateAdminSession(String key) throws AdminException {
-        if (adminSessionDao.findByUuid(key) == null) {
-            throw new AdminException("Please provide a valid key!");
+    private User getAuthenticatedUser() throws UserException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UserException("Unauthorized request.");
+        }
+
+        String email = authentication.getName(); // Get logged-in user's email
+        return userDao.findByEmail(email)
+                .orElseThrow(() -> new UserException("User not found!"));
+    }
+
+    private void validateAdmin(User authenticatedUser)throws UserException{
+        if(!authenticatedUser.getRole().equals(Role.ADMIN)){
+            throw new UserException("Access restricted: Admin privileges required.");
         }
     }
 }
