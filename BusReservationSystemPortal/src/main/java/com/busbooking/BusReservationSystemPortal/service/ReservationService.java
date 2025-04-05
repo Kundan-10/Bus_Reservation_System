@@ -11,13 +11,13 @@ import java.util.List;
 
 public interface ReservationService {
 
-    public Reservation addReservation(ReservationDTO reservationDTO, String key) throws ReservationException, BusException,UserException ;
+    public Reservation addReservation(ReservationDTO reservationDTO) throws ReservationException, BusException,UserException ;
 
-    public Reservation deleteReservation(Integer reservationId, String key) throws ReservationException, BusException, UserException;
+    public Reservation deleteReservation(Integer reservationId) throws ReservationException, BusException, UserException;
 
-    public Reservation viewReservation(Integer reservationId,String key) throws ReservationException, AdminException;
+    public Reservation viewReservation(Integer reservationId) throws ReservationException, AdminException, UserException;
 
-    public List<Reservation> viewAllReservation(String key) throws ReservationException, UserException;
+    public List<Reservation> viewAllReservation() throws ReservationException, UserException;
 
-    public List<Reservation> viewReservationByUser(String key) throws ReservationException, UserException;
+    public List<Reservation> viewReservationByUser() throws ReservationException, UserException;
 }
