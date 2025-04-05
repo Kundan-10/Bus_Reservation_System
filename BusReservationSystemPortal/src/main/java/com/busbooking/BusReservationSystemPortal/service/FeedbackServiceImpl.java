@@ -4,7 +4,6 @@ import com.busbooking.BusReservationSystemPortal.exception.BusException;
 import com.busbooking.BusReservationSystemPortal.exception.FeedbackException;
 import com.busbooking.BusReservationSystemPortal.exception.UserException;
 import com.busbooking.BusReservationSystemPortal.models.Bus;
-import com.busbooking.BusReservationSystemPortal.models.CurrentUserSession;
 import com.busbooking.BusReservationSystemPortal.models.Feedback;
 import com.busbooking.BusReservationSystemPortal.models.User;
 import com.busbooking.BusReservationSystemPortal.repositoty.BusDao;
@@ -12,12 +11,12 @@ import com.busbooking.BusReservationSystemPortal.repositoty.FeedbackDao;
 import com.busbooking.BusReservationSystemPortal.repositoty.UserDao;
 import com.busbooking.BusReservationSystemPortal.repositoty.UserSessionDao;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +28,8 @@ public class FeedbackServiceImpl implements FeedbackService{
     private final BusDao busDao;
     
     @Override
-    public Feedback addFeedBack(Feedback feedBack, Integer busId, String key) throws BusException, UserException {
-        CurrentUserSession loggedInUser = validateUserSession(key);
+    public Feedback addFeedBack(Feedback feedBack, Integer busId) throws BusException, UserException {
+        User loggedInUser = getAuthenticatedUser();
         User user = userDao.findById(loggedInUser.getUserId()).orElseThrow(()-> new UserException("User not found!"));
 
         Bus bus = busDao.findById(busId).orElseThrow(() -> new BusException("Bus is not present with Id: "+ busId));
@@ -42,10 +41,10 @@ public class FeedbackServiceImpl implements FeedbackService{
     }
 
     @Override
-    public Feedback updateFeedBack(Feedback feedback, String key) throws FeedbackException, UserException {
-        CurrentUserSession loggedInUser = validateUserSession(key);
+    public Feedback updateFeedBack(Feedback feedback) throws FeedbackException, UserException {
+        User loggedInUser = getAuthenticatedUser();
         User user = userDao.findById(loggedInUser.getUserId()).orElseThrow(()-> new UserException("User not found!"));
-        Feedback opt = feedbackDao.findById(feedback.getFeedBackId()).orElseThrow(() -> new FeedbackException("No feedback found!"));
+        Feedback opt = feedbackDao.findById(feedback.getFeedbackId()).orElseThrow(() -> new FeedbackException("No feedback found!"));
         Bus bus = busDao.findById(opt.getBus().getBusId()).orElseThrow(() -> new FeedbackException("Invalid bus details!"));
 
         feedback.setBus(bus);
@@ -56,8 +55,8 @@ public class FeedbackServiceImpl implements FeedbackService{
     }
 
     @Override
-    public Feedback deleteFeedBack(Integer feedbackId, String key) throws FeedbackException, UserException {
-        CurrentUserSession loggedInUser = validateUserSession(key);
+    public Feedback deleteFeedBack(Integer feedbackId) throws FeedbackException, UserException {
+        User loggedInUser = getAuthenticatedUser();
         userDao.findById(loggedInUser.getUserId()).orElseThrow(()-> new UserException("User not found!"));
         Feedback feedback = feedbackDao.findById(feedbackId).orElseThrow(() -> new FeedbackException("No feedback found!"));
         feedbackDao.delete(feedback);
@@ -78,8 +77,16 @@ public class FeedbackServiceImpl implements FeedbackService{
         return  feedbacks;
     }
 
-    private CurrentUserSession validateUserSession(String key) throws UserException {
-        return Optional.ofNullable(userSessionDao.findByUuid(key))
-                .orElseThrow(() -> new UserException("Invalid session key! Please provide a valid key!"));
+    private User getAuthenticatedUser() throws UserException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new UserException("Unauthorized request.");
+        }
+
+        String email = authentication.getName(); // Get logged-in user's email
+        return userDao.findByEmail(email)
+                .orElseThrow(() -> new UserException("User not found!"));
     }
+
 }
