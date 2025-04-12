@@ -33,6 +33,7 @@ public class User implements UserDetails {
 
     @NotNull(message="Password cannot be null!")
     @NotBlank(message= "Password cannot be blank!")
+    @JsonIgnore
 //    @Pattern(regexp = "[A-Za-z0-9!@#$%^&*_]{8,15}", message = "Password must be 8-15 characters in length and can include alphanumerics and special characters")
     private String password;
 
